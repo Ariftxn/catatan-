@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Catatan Pelajaran</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getFirestore, collection, addDoc, query, where, getDocs, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDnSegT4Lcb9bGOUyJ5utzLcGn6_ENtpyU",
+      authDomain: "catatan-e75fb.firebaseapp.com",
+      projectId: "catatan-e75fb",
+      storageBucket: "catatan-e75fb.appspot.com",
+      messagingSenderId: "116677878183",
+      appId: "1:116677878183:web:be3a75cf6bb6ebc4c7d682",
+      measurementId: "G-JJE3YHCYRV"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const storage = getStorage(app);
+
+    window.submitCatatan = async () => {
+      const mapel = document.getElementById("mapel").value;
+      const halaman = document.getElementById("halaman").value;
+      const tanggal = document.getElementById("tanggal").value;
+      const isi = document.getElementById("isi").value;
+      const file = document.getElementById("media").files[0];
+
+      if (!mapel || !halaman || !tanggal || !isi) {
+        alert("Lengkapi semua data!");
+        return;
+      }
+
+      let mediaUrl = null;
+      if (file) {
+        const fileRef = ref(storage, `catatan_media/${Date.now()}_${file.name}`);
+        await uploadBytes(fileRef, file);
+        mediaUrl = await getDownloadURL(fileRef);
+      }
+
+      await addDoc(collection(db, "catatan"), {
+        mapel,
+        halaman,
+        tanggal,
+        isi,
+        mediaUrl: mediaUrl || null,
+        timestamp: new Date()
+      });
+
+      alert("Catatan disimpan!");
+      document.getElementById("catatan-form").reset();
+    };
+
+    window.lihatCatatan = async (mapel) => {
+      const q = query(collection(db, "catatan"), where("mapel", "==", mapel), orderBy("tanggal"));
+      const querySnapshot = await getDocs(q);
+
+      const list = document.getElementById("daftar-catatan");
+      list.innerHTML = `<h2 class="text-xl font-bold mb-2">Catatan: ${mapel}</h2>`;
+
+      let dataMap = {};
+
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        const key = data.tanggal + ' - Hal: ' + data.halaman;
+        if (!dataMap[key]) dataMap[key] = [];
+        dataMap[key].push(data);
+      });
+
+      for (let k in dataMap) {
+        list.innerHTML += `
+          <div class="mb-4 p-3 bg-gray-100 rounded text-black">
+            <div class="font-semibold">${k}</div>
+            <ul class="list-disc list-inside mt-1">
+              ${dataMap[k].map(item => `
+                <li class="mb-2">
+                  ${item.isi}
+                  ${item.mediaUrl ? `
+                    <div class="mt-1">
+                      <a href="${item.mediaUrl}" target="_blank" class="text-blue-600 underline">📎 Lihat Media</a>
+                      ${item.mediaUrl.match(/\.(jpg|jpeg|png|gif)$/i) ? 
+                        `<img src="${item.mediaUrl}" class="mt-2 max-w-xs rounded shadow" />` : ""}
+                    </div>` : ""}
+                </li>`).join("")}
+            </ul>
+          </div>
+        `;
+      }
+    };
+  </script>
+</head>
+<body class="bg-white min-h-screen p-4 text-black">
+  <h1 class="text-2xl font-bold mb-4">Catatan Pelajaran</h1>
+
+  <!-- FORM INPUT CATATAN -->
+  <form id="catatan-form" class="space-y-4 mb-6">
+    <div>
+      <label class="block font-semibold">Mata Pelajaran</label>
+      <select id="mapel" class="border p-2 w-full rounded">
+        <option value="">Pilih Mapel</option>
+        <option>Bahasa Indonesia</option>
+        <option>Bahasa Inggris</option>
+        <option>Fisika</option>
+        <option>Matematika Umum</option>
+        <option>Matematika Lanjut</option>
+        <option>Sejarah</option>
+        <option>Geografi</option>
+        <option>PKWU</option>
+        <option>Seni Budaya</option>
+        <option>PPKN</option>
+        <option>PAI</option>
+        <option>PJOK</option>
+        <option>Sosiologi</option>
+      </select>
+    </div>
+    <div>
+      <label class="block font-semibold">Halaman</label>
+      <input id="halaman" type="text" class="border p-2 w-full rounded" placeholder="Contoh: 12-13" />
+    </div>
+    <div>
+      <label class="block font-semibold">Tanggal Input</label>
+      <input id="tanggal" type="date" class="border p-2 w-full rounded" />
+    </div>
+    <div>
+      <label class="block font-semibold">Isi Catatan</label>
+      <textarea id="isi" rows="4" class="border p-2 w-full rounded"></textarea>
+    </div>
+    <div>
+      <label class="block font-semibold">Media (gambar/pdf)</label>
+      <input id="media" type="file" class="border p-2 w-full rounded" />
+    </div>
+    <button type="button" onclick="submitCatatan()" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Simpan Catatan</button>
+  </form>
+
+  <!-- BUTTON PILIH MAPEL UNTUK LIHAT -->
+  <div class="flex flex-wrap gap-2 mb-4">
+    <button onclick="lihatCatatan('Bahasa Indonesia')" class="bg-gray-800 text-white px-3 py-1 rounded">📖 B. Indonesia</button>
+    <button onclick="lihatCatatan('Bahasa Inggris')" class="bg-gray-800 text-white px-3 py-1 rounded">🇬🇧 B. Inggris</button>
+    <button onclick="lihatCatatan('Fisika')" class="bg-gray-800 text-white px-3 py-1 rounded">🔬 Fisika</button>
+    <button onclick="lihatCatatan('Matematika Umum')" class="bg-gray-800 text-white px-3 py-1 rounded">📐 MTK Umum</button>
+    <button onclick="lihatCatatan('Matematika Lanjut')" class="bg-gray-800 text-white px-3 py-1 rounded">📏 MTK Lanjut</button>
+    <button onclick="lihatCatatan('Sejarah')" class="bg-gray-800 text-white px-3 py-1 rounded">📜 Sejarah</button>
+    <button onclick="lihatCatatan('Geografi')" class="bg-gray-800 text-white px-3 py-1 rounded">🌍 Geografi</button>
+    <button onclick="lihatCatatan('PKWU')" class="bg-gray-800 text-white px-3 py-1 rounded">🧵 PKWU</button>
+    <button onclick="lihatCatatan('Seni Budaya')" class="bg-gray-800 text-white px-3 py-1 rounded">🎨 Seni</button>
+    <button onclick="lihatCatatan('PPKN')" class="bg-gray-800 text-white px-3 py-1 rounded">📚 PPKN</button>
+    <button onclick="lihatCatatan('PAI')" class="bg-gray-800 text-white px-3 py-1 rounded">🕌 PAI</button>
+    <button onclick="lihatCatatan('PJOK')" class="bg-gray-800 text-white px-3 py-1 rounded">🏃 PJOK</button>
+    <button onclick="lihatCatatan('Sosiologi')" class="bg-gray-800 text-white px-3 py-1 rounded">👥 Sosiologi</button>
+  </div>
+
+  <!-- HASIL TAMPILAN -->
+  <div id="daftar-catatan" class="mt-4"></div>
+</body>
+</html>
