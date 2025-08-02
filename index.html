@@ -1,168 +1,156 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Catatan Pelajaran</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jadwal Belajar TKA</title>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #6a11cb, #2575fc);
+      color: #fff;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+    }
 
-  <!-- Firebase SDKs (compat version supaya bisa langsung diakses) -->
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-storage-compat.js"></script>
+    header {
+      text-align: center;
+      padding: 20px;
+      background: rgba(0,0,0,0.2);
+      font-size: 2rem;
+      animation: fadeInDown 1.2s ease;
+    }
+
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 20px auto;
+      background: rgba(255,255,255,0.1);
+      border-radius: 15px;
+      padding: 20px;
+      backdrop-filter: blur(8px);
+      animation: fadeIn 1.5s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      font-size: 1rem;
+      color: #fff;
+    }
+
+    th, td {
+      border: 1px solid rgba(255,255,255,0.3);
+      padding: 12px;
+      text-align: center;
+    }
+
+    th {
+      background: rgba(0,0,0,0.3);
+    }
+
+    tr {
+      transition: transform 0.3s ease, background 0.3s ease;
+    }
+
+    tr:hover {
+      transform: scale(1.02);
+      background: rgba(255,255,255,0.2);
+    }
+
+    .week-title {
+      font-size: 1.5rem;
+      margin: 20px 0 10px;
+      text-align: center;
+      animation: bounce 2s infinite;
+    }
+
+    @keyframes bounce {
+      0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+      40% { transform: translateY(-10px); }
+      60% { transform: translateY(-5px); }
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 0.9rem;
+      opacity: 0.7;
+    }
+
+    /* Tombol motivasi */
+    .motivation-btn {
+      display: block;
+      margin: 20px auto;
+      padding: 12px 20px;
+      background: #ff9800;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+
+    .motivation-btn:hover {
+      transform: scale(1.1);
+      background: #ffc107;
+    }
+
+    .quote {
+      text-align: center;
+      font-size: 1.2rem;
+      margin-top: 15px;
+      opacity: 0;
+      transition: opacity 0.6s ease;
+    }
+  </style>
 </head>
-<body class="bg-white min-h-screen p-4 text-black">
-  <h1 class="text-2xl font-bold mb-4">Catatan Pelajaran</h1>
+<body>
+  <header>📚 Jadwal Belajar TKA Matematika</header>
 
-  <!-- Form Input Catatan -->
-  <form id="catatan-form" class="space-y-4 mb-6">
-    <div>
-      <label class="block font-semibold">Mata Pelajaran</label>
-      <select id="mapel" class="border p-2 w-full rounded">
-        <option value="">Pilih Mapel</option>
-        <option>Bahasa Indonesia</option>
-        <option>Bahasa Inggris</option>
-        <option>Fisika</option>
-        <option>Matematika Umum</option>
-        <option>Matematika Lanjut</option>
-        <option>Sejarah</option>
-        <option>Geografi</option>
-        <option>PKWU</option>
-        <option>Seni Budaya</option>
-        <option>PPKN</option>
-        <option>PAI</option>
-        <option>PJOK</option>
-        <option>Sosiologi</option>
-      </select>
-    </div>
-    <div>
-      <label class="block font-semibold">Halaman</label>
-      <input id="halaman" type="text" class="border p-2 w-full rounded" placeholder="Contoh: 12-13" />
-    </div>
-    <div>
-      <label class="block font-semibold">Tanggal Input</label>
-      <input id="tanggal" type="date" class="border p-2 w-full rounded" />
-    </div>
-    <div>
-      <label class="block font-semibold">Isi Catatan</label>
-      <textarea id="isi" rows="4" class="border p-2 w-full rounded"></textarea>
-    </div>
-    <div>
-      <label class="block font-semibold">Media (gambar/pdf)</label>
-      <input id="media" type="file" class="border p-2 w-full rounded" />
-    </div>
-    <button type="button" onclick="submitCatatan()" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Simpan Catatan</button>
-  </form>
+  <div class="container">
+    <div class="week-title">Minggu 1: Bilangan Real</div>
+    <table>
+      <tr><th>Hari</th><th>Materi</th><th>Subtopik</th><th>Durasi</th></tr>
+      <tr><td>Senin</td><td>Bilangan Real Dasar</td><td>Jenis bilangan, rasional, irasional</td><td>2 jam</td></tr>
+      <tr><td>Selasa</td><td>Operasi Bilangan</td><td>Penjumlahan, pengurangan, perkalian, pembagian</td><td>2 jam</td></tr>
+      <tr><td>Rabu</td><td>Pangkat & Akar</td><td>Sifat pangkat & akar</td><td>2 jam</td></tr>
+      <tr><td>Kamis</td><td>Logaritma</td><td>Definisi & sifat logaritma</td><td>2 jam</td></tr>
+      <tr><td>Jumat</td><td>Latihan Soal</td><td>Soal campuran bilangan real</td><td>2 jam</td></tr>
+      <tr><td>Sabtu</td><td>Uji Pemahaman</td><td>Kuis mini</td><td>2 jam</td></tr>
+      <tr><td>Minggu</td><td>Review</td><td>Pembahasan soal yang salah</td><td>2 jam</td></tr>
+    </table>
 
-  <!-- Tombol Lihat per Mapel -->
-  <div class="flex flex-wrap gap-2 mb-4">
-    <button onclick="lihatCatatan('Bahasa Indonesia')" class="bg-gray-800 text-white px-3 py-1 rounded">📖 B. Indonesia</button>
-    <button onclick="lihatCatatan('Bahasa Inggris')" class="bg-gray-800 text-white px-3 py-1 rounded">🇬🇧 B. Inggris</button>
-    <button onclick="lihatCatatan('Fisika')" class="bg-gray-800 text-white px-3 py-1 rounded">🔬 Fisika</button>
-    <button onclick="lihatCatatan('Matematika Umum')" class="bg-gray-800 text-white px-3 py-1 rounded">📐 MTK Umum</button>
-    <button onclick="lihatCatatan('Matematika Lanjut')" class="bg-gray-800 text-white px-3 py-1 rounded">📏 MTK Lanjut</button>
-    <button onclick="lihatCatatan('Sejarah')" class="bg-gray-800 text-white px-3 py-1 rounded">📜 Sejarah</button>
-    <button onclick="lihatCatatan('Geografi')" class="bg-gray-800 text-white px-3 py-1 rounded">🌍 Geografi</button>
-    <button onclick="lihatCatatan('PKWU')" class="bg-gray-800 text-white px-3 py-1 rounded">🧵 PKWU</button>
-    <button onclick="lihatCatatan('Seni Budaya')" class="bg-gray-800 text-white px-3 py-1 rounded">🎨 Seni</button>
-    <button onclick="lihatCatatan('PPKN')" class="bg-gray-800 text-white px-3 py-1 rounded">📚 PPKN</button>
-    <button onclick="lihatCatatan('PAI')" class="bg-gray-800 text-white px-3 py-1 rounded">🕌 PAI</button>
-    <button onclick="lihatCatatan('PJOK')" class="bg-gray-800 text-white px-3 py-1 rounded">🏃 PJOK</button>
-    <button onclick="lihatCatatan('Sosiologi')" class="bg-gray-800 text-white px-3 py-1 rounded">👥 Sosiologi</button>
+    <button class="motivation-btn" onclick="showQuote()">🎯 Butuh Semangat? Klik Aku!</button>
+    <div class="quote" id="quote">"Belajar hari ini adalah investasi untuk suksesmu di masa depan!"</div>
   </div>
 
-  <!-- Tempat Menampilkan Catatan -->
-  <div id="daftar-catatan" class="mt-4"></div>
+  <footer>© 2025 Jadwal Belajar TKA | Tetap Semangat & Fokus!</footer>
 
-  <!-- Script Firebase dan Fungsi -->
   <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyDnSegT4Lcb9bGOUyJ5utzLcGn6_ENtpyU",
-      authDomain: "catatan-e75fb.firebaseapp.com",
-      projectId: "catatan-e75fb",
-      storageBucket: "catatan-e75fb.appspot.com",
-      messagingSenderId: "116677878183",
-      appId: "1:116677878183:web:be3a75cf6bb6ebc4c7d682",
-      measurementId: "G-JJE3YHCYRV"
-    };
-
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-    const storage = firebase.storage();
-
-    async function submitCatatan() {
-      const mapel = document.getElementById("mapel").value;
-      const halaman = document.getElementById("halaman").value;
-      const tanggal = document.getElementById("tanggal").value;
-      const isi = document.getElementById("isi").value;
-      const file = document.getElementById("media").files[0];
-
-      if (!mapel || !halaman || !tanggal || !isi) {
-        alert("Lengkapi semua data!");
-        return;
-      }
-
-      let mediaUrl = null;
-      if (file) {
-        const storageRef = storage.ref(`catatan_media/${Date.now()}_${file.name}`);
-        await storageRef.put(file);
-        mediaUrl = await storageRef.getDownloadURL();
-      }
-
-      await db.collection("catatan").add({
-        mapel,
-        halaman,
-        tanggal,
-        isi,
-        mediaUrl: mediaUrl || null,
-        timestamp: new Date()
-      });
-
-      alert("Catatan disimpan!");
-      document.getElementById("catatan-form").reset();
+    function showQuote() {
+      const quotes = [
+        "📖 Sedikit demi sedikit, lama-lama jadi bukit!",
+        "💡 Jangan menunda, sukses dimulai dari langkah kecil!",
+        "🔥 Kamu lebih hebat dari yang kamu pikirkan!",
+        "🎯 Fokus hari ini, panen hasil esok!"
+      ];
+      const quoteEl = document.getElementById('quote');
+      quoteEl.textContent = quotes[Math.floor(Math.random() * quotes.length)];
+      quoteEl.style.opacity = 1;
     }
-
-    async function lihatCatatan(mapel) {
-      const list = document.getElementById("daftar-catatan");
-      list.innerHTML = `<h2 class="text-xl font-bold mb-2">Catatan: ${mapel}</h2>`;
-
-      const snapshot = await db.collection("catatan")
-        .where("mapel", "==", mapel)
-        .orderBy("tanggal")
-        .get();
-
-      let dataMap = {};
-
-      snapshot.forEach(doc => {
-        const data = doc.data();
-        const key = data.tanggal + ' - Hal: ' + data.halaman;
-        if (!dataMap[key]) dataMap[key] = [];
-        dataMap[key].push(data);
-      });
-
-      for (let k in dataMap) {
-        list.innerHTML += `
-          <div class="mb-4 p-3 bg-gray-100 rounded text-black">
-            <div class="font-semibold">${k}</div>
-            <ul class="list-disc list-inside mt-1">
-              ${dataMap[k].map(item => `
-                <li class="mb-2">
-                  ${item.isi}
-                  ${item.mediaUrl ? `
-                    <div class="mt-1">
-                      <a href="${item.mediaUrl}" target="_blank" class="text-blue-600 underline">📎 Lihat Media</a>
-                      ${item.mediaUrl.match(/\.(jpg|jpeg|png|gif)$/i) ? 
-                        `<img src="${item.mediaUrl}" class="mt-2 max-w-xs rounded shadow" />` : ""}
-                    </div>` : ""}
-                </li>`).join("")}
-            </ul>
-          </div>
-        `;
-      }
-    }
-
-    window.submitCatatan = submitCatatan;
-    window.lihatCatatan = lihatCatatan;
   </script>
 </body>
 </html>
