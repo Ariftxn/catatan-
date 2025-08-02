@@ -15,16 +15,44 @@
     }
 
     header {
-      text-align: center;
-      padding: 20px;
-      background: rgba(0,0,0,0.2);
-      font-size: 2rem;
-      animation: fadeInDown 1.2s ease;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 20px;
+      background: rgba(0,0,0,0.3);
     }
 
-    @keyframes fadeInDown {
-      from { opacity: 0; transform: translateY(-30px); }
-      to { opacity: 1; transform: translateY(0); }
+    header h1 {
+      margin: 0;
+      font-size: 1.8rem;
+    }
+
+    /* Hamburger menu */
+    .menu-icon {
+      font-size: 2rem;
+      cursor: pointer;
+    }
+
+    .menu {
+      display: none;
+      position: absolute;
+      top: 60px;
+      right: 20px;
+      background: rgba(0,0,0,0.8);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .menu a {
+      display: block;
+      padding: 10px 20px;
+      text-decoration: none;
+      color: white;
+      transition: background 0.3s;
+    }
+
+    .menu a:hover {
+      background: rgba(255,255,255,0.2);
     }
 
     .container {
@@ -34,12 +62,12 @@
       border-radius: 15px;
       padding: 20px;
       backdrop-filter: blur(8px);
-      animation: fadeIn 1.5s ease;
+      animation: fadeIn 1.2s ease;
     }
 
     @keyframes fadeIn {
-      from { opacity: 0; transform: scale(0.9); }
-      to { opacity: 1; transform: scale(1); }
+      from {opacity: 0; transform: scale(0.95);}
+      to {opacity: 1; transform: scale(1);}
     }
 
     table {
@@ -61,27 +89,58 @@
       background: rgba(0,0,0,0.3);
     }
 
-    tr {
-      transition: transform 0.3s ease, background 0.3s ease;
-    }
-
     tr:hover {
-      transform: scale(1.02);
       background: rgba(255,255,255,0.2);
     }
 
-    .week-title {
-      font-size: 1.5rem;
-      margin: 20px 0 10px;
+    /* Quiz kuadrat */
+    .section-title {
       text-align: center;
-      animation: bounce 2s infinite;
+      margin-top: 25px;
+      font-size: 1.4rem;
+      font-weight: bold;
+      color: #ffeb3b;
     }
 
-    @keyframes bounce {
-      0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
-      40% { transform: translateY(-10px); }
-      60% { transform: translateY(-5px); }
+    .quiz-container {
+      text-align: center;
+      margin-top: 15px;
     }
+
+    .quiz-number {
+      font-size: 2rem;
+      margin: 15px 0;
+    }
+
+    .quiz-input {
+      padding: 8px;
+      font-size: 1rem;
+      width: 150px;
+      text-align: center;
+      border-radius: 8px;
+      border: none;
+      outline: none;
+    }
+
+    .quiz-btn {
+      margin-top: 10px;
+      padding: 8px 15px;
+      background: #ff9800;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      color: #fff;
+      cursor: pointer;
+    }
+
+    .result {
+      margin-top: 10px;
+      font-size: 1.2rem;
+      font-weight: bold;
+    }
+
+    .correct { color: #4caf50; }
+    .wrong { color: #f44336; }
 
     footer {
       text-align: center;
@@ -89,199 +148,109 @@
       font-size: 0.9rem;
       opacity: 0.7;
     }
-
-    .motivation-btn {
-      display: block;
-      margin: 20px auto;
-      padding: 12px 20px;
-      background: #ff9800;
-      color: #fff;
-      border: none;
-      border-radius: 10px;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: transform 0.3s ease;
-    }
-
-    .motivation-btn:hover {
-      transform: scale(1.1);
-      background: #ffc107;
-    }
-
-    .quote {
-      text-align: center;
-      font-size: 1.2rem;
-      margin-top: 15px;
-      opacity: 0;
-      transition: opacity 0.6s ease;
-    }
-
-    /* Pop-up materi */
-    .popup {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.8);
-      display: none;
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-    }
-
-    .popup-content {
-      background: #fff;
-      color: #000;
-      width: 80%;
-      max-height: 80%;
-      overflow-y: auto;
-      border-radius: 15px;
-      padding: 20px;
-      animation: slideUp 0.5s ease;
-    }
-
-    @keyframes slideUp {
-      from { transform: translateY(50px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
-    }
-
-    .close-btn {
-      background: red;
-      color: #fff;
-      border: none;
-      float: right;
-      padding: 5px 10px;
-      cursor: pointer;
-      border-radius: 8px;
-    }
-
-    .example, .exercise {
-      margin-top: 10px;
-      padding: 10px;
-      background: #f1f1f1;
-      border-radius: 8px;
-    }
-
-    .exercise button {
-      margin-top: 5px;
-      background: #2575fc;
-      color: #fff;
-      border: none;
-      padding: 6px;
-      border-radius: 5px;
-      cursor: pointer;
-    }
   </style>
 </head>
 <body>
-  <header>📚 Jadwal Belajar TKA Matematika</header>
+  <header>
+    <h1>📚 Jadwal Belajar TKA</h1>
+    <div class="menu-icon" onclick="toggleMenu()">☰</div>
+    <div class="menu" id="menu">
+      <a href="#" onclick="showSection('jadwal')">📅 Jadwal Belajar</a>
+      <a href="#" onclick="showSection('kuadrat')">✏️ Latihan Kuadrat</a>
+    </div>
+  </header>
 
-  <div class="container">
-    <div class="week-title">Minggu 1: Bilangan Real</div>
+  <!-- Konten Jadwal -->
+  <div class="container" id="jadwal-section">
+    <h2 class="week-title">Minggu 1: Bilangan Real</h2>
     <table>
       <tr><th>Hari</th><th>Materi</th><th>Subtopik</th><th>Durasi</th></tr>
       <tr>
         <td>Senin</td>
-        <td onclick="openPopup('bilanganReal')">Bilangan Real Dasar</td>
+        <td onclick="alert('Materi Bilangan Real Dasar')">Bilangan Real Dasar</td>
         <td>Jenis bilangan, rasional, irasional</td>
         <td>2 jam</td>
       </tr>
       <tr>
         <td>Selasa</td>
-        <td onclick="openPopup('operasiReal')">Operasi Bilangan</td>
+        <td onclick="alert('Materi Operasi Bilangan Real')">Operasi Bilangan</td>
         <td>Penjumlahan, pengurangan, perkalian, pembagian</td>
         <td>2 jam</td>
       </tr>
       <tr>
         <td>Rabu</td>
-        <td onclick="openPopup('pangkatAkar')">Pangkat & Akar</td>
+        <td onclick="alert('Materi Pangkat & Akar')">Pangkat & Akar</td>
         <td>Sifat pangkat & akar</td>
         <td>2 jam</td>
       </tr>
     </table>
-
-    <button class="motivation-btn" onclick="showQuote()">🎯 Butuh Semangat? Klik Aku!</button>
-    <div class="quote" id="quote">"Belajar hari ini adalah investasi untuk suksesmu di masa depan!"</div>
   </div>
 
-  <!-- Popup -->
-  <div class="popup" id="popup">
-    <div class="popup-content" id="popup-content">
-      <button class="close-btn" onclick="closePopup()">X</button>
-      <div id="popup-body"></div>
+  <!-- Konten Kuadrat -->
+  <div class="container" id="kuadrat-section" style="display:none;">
+    <h2 class="section-title">📐 Tabel Kuadrat 1–100</h2>
+    <div id="kuadrat-table"></div>
+    <div class="section-title">🎯 Quiz Hafalan Kuadrat</div>
+    <div class="quiz-container">
+      <div class="quiz-number" id="quiz-number">Klik "Mulai Quiz"</div>
+      <input type="number" id="quiz-answer" class="quiz-input" placeholder="Jawaban kuadrat">
+      <br>
+      <button class="quiz-btn" onclick="startQuiz()">Mulai Quiz</button>
+      <button class="quiz-btn" onclick="checkAnswer()">Cek Jawaban</button>
+      <div class="result" id="quiz-result"></div>
     </div>
   </div>
 
-  <footer>© 2025 Jadwal Belajar TKA | Tetap Semangat & Fokus!</footer>
+  <footer>© 2025 Jadwal Belajar TKA | Tetap Semangat!</footer>
 
   <script>
-    const materi = {
-      bilanganReal: `
-        <h2>Bilangan Real Dasar</h2>
-        <p>Bilangan real mencakup semua bilangan rasional (pecahan, desimal) dan irasional (akar tidak sempurna, π).</p>
-        <div class="example">
-          <strong>Contoh:</strong><br>
-          Bilangan rasional: 1/2, 3, -7.<br>
-          Bilangan irasional: √2, π.
-        </div>
-        <div class="exercise">
-          <strong>Latihan Soal:</strong>
-          <p>1. Tentukan apakah √9 termasuk bilangan rasional atau irasional.</p>
-          <button onclick="alert('Jawaban: Rasional, karena √9 = 3.')">Lihat Jawaban</button>
-        </div>
-      `,
-      operasiReal: `
-        <h2>Operasi Bilangan Real</h2>
-        <p>Operasi bilangan real meliputi penjumlahan, pengurangan, perkalian, dan pembagian.</p>
-        <div class="example">
-          <strong>Contoh:</strong><br>
-          3 + 2 = 5 <br>
-          7 - 4 = 3 <br>
-          2 × 5 = 10 <br>
-          10 ÷ 2 = 5
-        </div>
-        <div class="exercise">
-          <strong>Latihan Soal:</strong>
-          <p>Hitung: (8 ÷ 2) + (3 × 2).</p>
-          <button onclick="alert('Jawaban: (8 ÷ 2) + (3 × 2) = 4 + 6 = 10')">Lihat Jawaban</button>
-        </div>
-      `,
-      pangkatAkar: `
-        <h2>Pangkat & Akar</h2>
-        <p>Pangkat adalah perkalian berulang. Akar adalah kebalikan dari pangkat.</p>
-        <div class="example">
-          <strong>Contoh:</strong><br>
-          2³ = 2 × 2 × 2 = 8 <br>
-          √16 = 4
-        </div>
-        <div class="exercise">
-          <strong>Latihan Soal:</strong>
-          <p>Hitung nilai dari √25 + 2³.</p>
-          <button onclick="alert('Jawaban: √25 + 2³ = 5 + 8 = 13')">Lihat Jawaban</button>
-        </div>
-      `
-    };
-
-    function openPopup(key) {
-      document.getElementById('popup-body').innerHTML = materi[key];
-      document.getElementById('popup').style.display = 'flex';
+    const menu = document.getElementById("menu");
+    function toggleMenu() {
+      menu.style.display = menu.style.display === "block" ? "none" : "block";
     }
 
-    function closePopup() {
-      document.getElementById('popup').style.display = 'none';
+    function showSection(section) {
+      document.getElementById("jadwal-section").style.display = section === "jadwal" ? "block" : "none";
+      document.getElementById("kuadrat-section").style.display = section === "kuadrat" ? "block" : "none";
+      menu.style.display = "none";
     }
 
-    function showQuote() {
-      const quotes = [
-        "📖 Sedikit demi sedikit, lama-lama jadi bukit!",
-        "💡 Jangan menunda, sukses dimulai dari langkah kecil!",
-        "🔥 Kamu lebih hebat dari yang kamu pikirkan!",
-        "🎯 Fokus hari ini, panen hasil esok!"
-      ];
-      const quoteEl = document.getElementById('quote');
-      quoteEl.textContent = quotes[Math.floor(Math.random() * quotes.length)];
-      quoteEl.style.opacity = 1;
+    // Buat tabel kuadrat
+    const kuadratTableDiv = document.getElementById("kuadrat-table");
+    let tableHTML = "<table><tr><th>Bilangan</th><th>Kuadrat</th></tr>";
+    for (let i = 1; i <= 100; i++) {
+      tableHTML += `<tr><td>${i}</td><td>${i}² = ${i * i}</td></tr>`;
+    }
+    tableHTML += "</table>";
+    kuadratTableDiv.innerHTML = tableHTML;
+
+    // Quiz kuadrat
+    let currentNumber = 0;
+    function startQuiz() {
+      currentNumber = Math.floor(Math.random() * 100) + 1;
+      document.getElementById("quiz-number").textContent = `${currentNumber}² = ?`;
+      document.getElementById("quiz-result").textContent = "";
+      document.getElementById("quiz-answer").value = "";
+    }
+
+    function checkAnswer() {
+      const userAnswer = parseInt(document.getElementById("quiz-answer").value);
+      const correctAnswer = currentNumber * currentNumber;
+      const resultDiv = document.getElementById("quiz-result");
+
+      if (isNaN(userAnswer)) {
+        resultDiv.textContent = "⚠️ Masukkan jawaban!";
+        resultDiv.className = "result wrong";
+        return;
+      }
+
+      if (userAnswer === correctAnswer) {
+        resultDiv.textContent = "✅ Benar! Hebat!";
+        resultDiv.className = "result correct";
+      } else {
+        resultDiv.textContent = `❌ Salah! Jawaban benar: ${currentNumber}² = ${correctAnswer}`;
+        resultDiv.className = "result wrong";
+      }
     }
   </script>
 </body>
